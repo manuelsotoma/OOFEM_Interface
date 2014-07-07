@@ -33,7 +33,7 @@ namespace safeprojectname
         {
             get
             {
-                return new Guid("$4561aeb8-65fa-4cc3-b3b0-97974848d19e$");
+                return new Guid("4561aeb8-65fa-4cc3-b3b0-97974848d19e");
             }
         }
 

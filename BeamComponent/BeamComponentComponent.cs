@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Grasshopper.Kernel;
 using Rhino.Geometry;
+using GH_OOFEM;
 
 namespace BeamComponent
 {
@@ -27,6 +28,9 @@ namespace BeamComponent
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddLineParameter("Line", "Line", "", GH_ParamAccess.list);
+            pManager.AddPlaneParameter("LocalCoordinateSystem", "LCS", "", GH_ParamAccess.list);
+            pManager[1].Optional = true;
         }
 
         /// <summary>
@@ -34,6 +38,7 @@ namespace BeamComponent
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+            pManager.AddGenericParameter("Beam", "B", "", GH_ParamAccess.list);
         }
 
         /// <summary>
@@ -43,6 +48,25 @@ namespace BeamComponent
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            List<Line>          axisList = new List<Line>();
+            List<ElementBeam>   beamList = new List<ElementBeam>();
+
+            DA.GetDataList(0, axisList);
+                
+            foreach (Line mainAxis in axisList)
+            {
+                GH_OOFEM.ElementBeam beam;
+                if (mainAxis.Length == 0)
+                {
+                    beam = new ElementBeam();
+                }
+                else
+                {
+                    beam = new ElementBeam(mainAxis);
+                }
+                beamList.Add(beam);
+            }
+            DA.SetDataList(0, beamList);
         }
 
         /// <summary>
